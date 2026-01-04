@@ -1,0 +1,133 @@
+<div class="container">
+  <header>
+    <h1>🔗 ShortLink</h1>
+    <p class="subtitle">Shorten your URLs instantly</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="encode">Shorten URL</button>
+    <button class="tab" data-tab="decode">Expand URL</button>
+  </div>
+
+  <div class="tab-content" id="encode-tab">
+    <form id="encode-form">
+      <div class="input-group">
+        <input type="url" id="encode-url" placeholder="Enter a long URL (https://example.com/...)" required>
+        <button type="submit">Shorten</button>
+      </div>
+    </form>
+    <div id="encode-result" class="result hidden">
+      <p>Your shortened URL:</p>
+      <div class="url-display">
+        <a id="short-url-link" href="#" target="_blank"></a>
+        <button id="copy-btn" class="copy-btn">Copy</button>
+      </div>
+    </div>
+    <div id="encode-error" class="error hidden"></div>
+  </div>
+
+  <div class="tab-content hidden" id="decode-tab">
+    <form id="decode-form">
+      <div class="input-group">
+        <input type="text" id="decode-url" placeholder="Enter a short URL or code" required>
+        <button type="submit">Expand</button>
+      </div>
+    </form>
+    <div id="decode-result" class="result hidden">
+      <p>Original URL:</p>
+      <div class="url-display">
+        <a id="original-url-link" href="#" target="_blank"></a>
+      </div>
+    </div>
+    <div id="decode-error" class="error hidden"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Tab switching
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      tabs.forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(this.dataset.tab + '-tab').classList.remove('hidden');
+    });
+  });
+
+  // Encode form
+  document.getElementById('encode-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const url = document.getElementById('encode-url').value;
+    const resultDiv = document.getElementById('encode-result');
+    const errorDiv = document.getElementById('encode-error');
+    
+    resultDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+    
+    try {
+      const response = await fetch('/encode', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ url: url })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        document.getElementById('short-url-link').href = data.short_url;
+        document.getElementById('short-url-link').textContent = data.short_url;
+        resultDiv.classList.remove('hidden');
+      } else {
+        errorDiv.textContent = data.errors ? data.errors.join(', ') : 'An error occurred';
+        errorDiv.classList.remove('hidden');
+      }
+    } catch (error) {
+      errorDiv.textContent = 'Network error. Please try again.';
+      errorDiv.classList.remove('hidden');
+    }
+  });
+
+  // Decode form
+  document.getElementById('decode-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const shortUrl = document.getElementById('decode-url').value;
+    const resultDiv = document.getElementById('decode-result');
+    const errorDiv = document.getElementById('decode-error');
+    
+    resultDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+    
+    try {
+      const response = await fetch('/decode?short_url=' + encodeURIComponent(shortUrl));
+      const data = await response.json();
+      
+      if (response.ok) {
+        document.getElementById('original-url-link').href = data.original_url;
+        document.getElementById('original-url-link').textContent = data.original_url;
+        resultDiv.classList.remove('hidden');
+      } else {
+        errorDiv.textContent = data.error || 'URL not found';
+        errorDiv.classList.remove('hidden');
+      }
+    } catch (error) {
+      errorDiv.textContent = 'Network error. Please try again.';
+      errorDiv.classList.remove('hidden');
+    }
+  });
+
+  // Copy button
+  document.getElementById('copy-btn').addEventListener('click', function() {
+    const url = document.getElementById('short-url-link').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      this.textContent = 'Copied!';
+      setTimeout(() => { this.textContent = 'Copy'; }, 2000);
+    });
+  });
+});
+</script>
