@@ -1,0 +1,22 @@
+# Bundler
+/.bundle
+
+# Rails
+/log/*
+/tmp
+/public/packs
+/public/packs-test
+/storage/*
+
+# Node
+/node_modules
+
+# Environment
+.env
+.byebug_history
+
+# OS
+.DS_Store
+
+# Coverage
+coverage/
