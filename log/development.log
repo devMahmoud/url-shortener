@@ -1,0 +1,111 @@
+  [1m[35m (166.6ms)[0m  [1m[35mCREATE DATABASE "url_shortener_development" ENCODING = 'unicode'[0m
+  [1m[35m (46.5ms)[0m  [1m[35mCREATE DATABASE "url_shortener_test" ENCODING = 'unicode'[0m
+  [1m[35m (5.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (3.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(8112849748291978620)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.8ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.8ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-01-04 17:31:49.841227', '2026-01-04 17:31:49.841233') RETURNING "key"[0m
+Migrating to CreateUrls (20260104172836)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.6ms)[0m  [1m[35mCREATE TABLE "urls" ("id" bigserial primary key, "original_url" character varying NOT NULL, "short_code" character varying NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.3ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_urls_on_short_code" ON "urls" ("short_code")[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE INDEX "index_urls_on_original_url" ON "urls" ("original_url")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260104172836') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(8112849748291978620)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/?id=cb5a6c87-dedb-4ef9-885e-e9ebe662deb6&vscodeBrowserReqId=1767548137542" for 127.0.0.1 at 2026-01-04 19:35:37 +0200
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by UrlsController#home as HTML
+  Parameters: {"id"=>"cb5a6c87-dedb-4ef9-885e-e9ebe662deb6", "vscodeBrowserReqId"=>"1767548137542"}
+  Rendering layout layouts/application.html.erb
+  Rendering urls/home.html.erb within layouts/application
+  Rendered urls/home.html.erb within layouts/application (Duration: 5.3ms | Allocations: 535)
+  Rendered layout layouts/application.html.erb (Duration: 176.9ms | Allocations: 73106)
+Completed 200 OK in 206ms (Views: 189.0ms | ActiveRecord: 0.0ms | Allocations: 76757)
+
+
+Started GET "/" for 127.0.0.1 at 2026-01-04 19:36:27 +0200
+Processing by UrlsController#home as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering urls/home.html.erb within layouts/application
+  Rendered urls/home.html.erb within layouts/application (Duration: 0.0ms | Allocations: 12)
+  Rendered layout layouts/application.html.erb (Duration: 2.1ms | Allocations: 1396)
+Completed 200 OK in 3ms (Views: 2.7ms | ActiveRecord: 0.0ms | Allocations: 1693)
+
+
+Started GET "/service-worker.js" for 127.0.0.1 at 2026-01-04 19:36:29 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/service-worker.js"):
+  
+Started POST "/encode" for 127.0.0.1 at 2026-01-04 19:36:58 +0200
+Processing by UrlsController#encode as */*
+  Parameters: {"url"=>"https://testing-for-beginners.rubymonstas.org/"}
+  [1m[36mUrl Load (0.6ms)[0m  [1m[34mSELECT "urls".* FROM "urls" WHERE "urls"."original_url" = $1 LIMIT $2[0m  [["original_url", "https://testing-for-beginners.rubymonstas.org/"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:15:in `encode'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/url.rb:31:in `block in generate_short_code'
+  [1m[36mUrl Exists? (1.4ms)[0m  [1m[34mSELECT 1 AS one FROM "urls" WHERE "urls"."short_code" = $1 LIMIT $2[0m  [["short_code", "67WyR4"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:31:in `block in generate_short_code'
+  [1m[36mCACHE Url Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "urls" WHERE "urls"."short_code" = $1 LIMIT $2[0m  [["short_code", "67WyR4"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:15:in `encode'
+  [1m[36mUrl Create (0.9ms)[0m  [1m[32mINSERT INTO "urls" ("original_url", "short_code", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["original_url", "https://testing-for-beginners.rubymonstas.org/"], ["short_code", "67WyR4"], ["created_at", "2026-01-04 17:36:58.090061"], ["updated_at", "2026-01-04 17:36:58.090061"]]
+  ↳ app/models/url.rb:15:in `encode'
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/models/url.rb:15:in `encode'
+Completed 200 OK in 48ms (Views: 0.3ms | ActiveRecord: 13.8ms | Allocations: 18260)
+
+
+Started GET "/67WyR4" for 127.0.0.1 at 2026-01-04 19:37:08 +0200
+Processing by UrlsController#redirect as HTML
+  Parameters: {"short_code"=>"67WyR4"}
+  [1m[36mUrl Load (0.2ms)[0m  [1m[34mSELECT "urls".* FROM "urls" WHERE "urls"."short_code" = $1 LIMIT $2[0m  [["short_code", "67WyR4"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:20:in `decode'
+Redirected to https://testing-for-beginners.rubymonstas.org/
+Completed 301 Moved Permanently in 3ms (ActiveRecord: 0.2ms | Allocations: 892)
+
+
+Started GET "/service-worker.js" for 127.0.0.1 at 2026-01-04 19:37:15 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/service-worker.js"):
+  
+Started GET "/decode?short_url=http%3A%2F%2Flocalhost%3A3000%2F67WyR4" for 127.0.0.1 at 2026-01-04 19:37:22 +0200
+Processing by UrlsController#decode as */*
+  Parameters: {"short_url"=>"http://localhost:3000/67WyR4"}
+  [1m[36mUrl Load (0.3ms)[0m  [1m[34mSELECT "urls".* FROM "urls" WHERE "urls"."short_code" = $1 LIMIT $2[0m  [["short_code", "67WyR4"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:20:in `decode'
+Completed 200 OK in 3ms (Views: 0.1ms | ActiveRecord: 0.3ms | Allocations: 770)
+
+
+Started GET "/" for ::1 at 2026-01-04 19:58:14 +0200
+  [1m[36mActiveRecord::SchemaMigration Load (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by UrlsController#home as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering urls/home.html.erb within layouts/application
+  Rendered urls/home.html.erb within layouts/application (Duration: 0.7ms | Allocations: 535)
+  Rendered layout layouts/application.html.erb (Duration: 56.4ms | Allocations: 32374)
+Completed 200 OK in 66ms (Views: 60.9ms | ActiveRecord: 0.0ms | Allocations: 35945)
+
+
+Started GET "/service-worker.js" for ::1 at 2026-01-04 19:58:16 +0200
+  
+ActionController::RoutingError (No route matches [GET] "/service-worker.js"):
+  
+Started GET "/decode?short_url=http%3A%2F%2Flocalhost%3A3000%2F67WyR4" for ::1 at 2026-01-04 19:58:20 +0200
+Processing by UrlsController#decode as */*
+  Parameters: {"short_url"=>"http://localhost:3000/67WyR4"}
+  [1m[36mUrl Load (0.8ms)[0m  [1m[34mSELECT "urls".* FROM "urls" WHERE "urls"."short_code" = $1 LIMIT $2[0m  [["short_code", "67WyR4"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:20:in `decode'
+Completed 200 OK in 50ms (Views: 0.4ms | ActiveRecord: 10.9ms | Allocations: 18135)
+
+
+Started POST "/encode" for ::1 at 2026-01-04 19:58:43 +0200
+Processing by UrlsController#encode as */*
+  Parameters: {"url"=>"https://testing-for-beginners.rubymonstas.org/"}
+  [1m[36mUrl Load (0.3ms)[0m  [1m[34mSELECT "urls".* FROM "urls" WHERE "urls"."original_url" = $1 LIMIT $2[0m  [["original_url", "https://testing-for-beginners.rubymonstas.org/"], ["LIMIT", 1]]
+  ↳ app/models/url.rb:15:in `encode'
+Completed 200 OK in 14ms (Views: 0.1ms | ActiveRecord: 0.2ms | Allocations: 1285)
+
+
+  [1m[36mUrl Load (0.4ms)[0m  [1m[34mSELECT "urls".* FROM "urls" /* loading for pp */ LIMIT $1[0m  [["LIMIT", 11]]
