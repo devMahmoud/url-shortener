@@ -270,7 +270,6 @@ PLATFORMS
 DEPENDENCIES
   bootsnap
   capybara
-  cgi (>= 0.3.3)
   debug
   error_highlight (>= 0.4.0)
   importmap-rails

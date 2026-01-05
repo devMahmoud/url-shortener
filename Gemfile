@@ -14,9 +14,6 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-# Ensure a compatible stdlib `cgi` gem is installed to satisfy `erb` requirements
-gem "cgi", ">= 0.3.3"
-
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 
